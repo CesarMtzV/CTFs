@@ -1,0 +1,16 @@
+> nmap -sT -p- 10.10.253.82
+Nmap scan report for 10.10.253.82
+Host is up (0.20s latency).
+Not shown: 65532 filtered ports
+PORT     STATE SERVICE
+21/tcp   open  ftp
+80/tcp   open  http
+2222/tcp open  EtherNetIP-1
+
+> nmap -sV -p 2222 10.10.253.82
+Nmap scan report for 10.10.253.82
+Host is up (0.20s latency).
+
+PORT     STATE SERVICE VERSION
+2222/tcp open  ssh     OpenSSH 7.2p2 Ubuntu 4ubuntu2.8 (Ubuntu Linux; protocol 2.0)
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
