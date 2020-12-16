@@ -119,12 +119,12 @@ kali@kali:~$ gobuster dir -u 10.10.219.145 -w /usr/share/wordlists/dirb/common.t
 When we inspect the __/simple__ directory, we find __CMS Made Simple__. The version can be found in the footer of the page.
 If we search for this CVE: `CMS Made Simple 2.2.8 cve` we find a vulnerability to SQL Injection.
 
-5. What's the password?
+### 5. What's the password?
 ```
 secret
 ```
 
-6. Where can you login with the details obtained?
+### 6. Where can you login with the details obtained?
 ```
 ssh
 ```
